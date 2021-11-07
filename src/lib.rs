@@ -44,6 +44,7 @@ use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
 use std::collections::hash_map;
 use std::collections::HashMap;
+use std::collections::hash_map::Keys;
 use std::fmt::{self, Debug};
 use std::hash::Hash;
 
@@ -162,6 +163,26 @@ where
             }
         }
         result
+    }
+
+    /// Enter the primary key and receive the corresponding secondary key.
+    pub fn get_key(&self, key1: &K1) -> Option<&K2> {
+        self.value_map.get(key1).map(|(key2, _)| key2)
+    }
+
+    /// Enter the secondary key and receive the corresponding primary key.
+    pub fn get_key_alt(&self, key2: &K2) -> Option<&K1> {
+        self.key_map.get(key2)
+    }
+
+    /// Receive an iterator over all primary keys.
+    pub fn keys(&self) -> Keys<K1, (K2, V)> {
+        self.value_map.keys()
+    }
+
+    /// Receive an iterator over all secondary keys.
+    pub fn keys_alt(&self) -> Keys<K2, K1> {
+        self.key_map.keys()
     }
 
     /// Remove an item from the HashMap using the primary key. The value for the
